@@ -11,11 +11,12 @@ valid_teams = [
 
 # check team validity
 def get_valid_team(prompt):
-    team_name = input(prompt)
-    while team_name not in valid_teams:
+    team_name = input(prompt).strip().lower()
+    valid_teams_lower = [team.lower() for team in valid_teams]
+    while team_name not in valid_teams_lower:
         print(f"'{team_name}' is not a valid La Liga team. Please try again.")
-        team_name = input(prompt)
-    return team_name
+        team_name = input(prompt).strip().lower()
+    return valid_teams[valid_teams_lower.index(team_name)]
 
 # load model
 def load_model(filepath):
