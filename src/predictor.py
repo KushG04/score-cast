@@ -1,6 +1,22 @@
 import pickle
 import pandas as pd
 
+# valid teams
+valid_teams = [
+    "Barcelona", "Real Madrid", "Atletico Madrid", "Valencia", "Sevilla",
+    "Villarreal", "Real Sociedad", "Real Betis", "Athletic Club", "Espanyol",
+    "Real Valladolid", "Getafe", "Osasuna", "Celta de Vigo", "Las Palmas", "Alaves",
+    "Leganes", "Mallorca", "Girona", "Rayo Vallecano"
+]
+
+# check team validity
+def get_valid_team(prompt):
+    team_name = input(prompt)
+    while team_name not in valid_teams:
+        print(f"'{team_name}' is not a valid La Liga team. Please try again.")
+        team_name = input(prompt)
+    return team_name
+
 # load model
 def load_model(filepath):
     with open(filepath, 'rb') as f:
@@ -14,14 +30,14 @@ def get_team_form(team_name, games_data, num_games=5):
     form = 0
     for _, game in recent_games.iterrows():
         if game['HomeTeam'] == team_name:
-            if game['FTR'] == 'H':  # Home Win
+            if game['FTR'] == 'H':
                 form += 1
-            elif game['FTR'] == 'D':  # Draw
+            elif game['FTR'] == 'D':
                 form += 0.5
         elif game['AwayTeam'] == team_name:
-            if game['FTR'] == 'A':  # Away Win
+            if game['FTR'] == 'A':
                 form += 1
-            elif game['FTR'] == 'D':  # Draw
+            elif game['FTR'] == 'D':
                 form += 0.5
     return form / num_games
 
@@ -56,8 +72,8 @@ if __name__ == "__main__":
     games_data = pd.read_csv('./data/la-liga-results-1995-2020.csv')
     players_data = pd.read_csv('./data/player-status-2022-2023.csv')
     
-    home_team = input("Enter the home team name: ")
-    away_team = input("Enter the away team name: ")
+    home_team = get_valid_team("Home Team: ")
+    away_team = get_valid_team("Away Team: ")
     
     home_team_form = get_team_form(home_team, games_data)
     home_team_goals = get_team_goals(home_team, games_data)
